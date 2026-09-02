@@ -26,10 +26,8 @@ def generate_launch_description():
     gazebo_pkg_name = 'ros_gz_sim'
     gazebo_config_file_name = 'gz_bridge_config.yaml'
     gazebo_world_file_name = 'dasdynamic_test_world1.sdf'
-    # gazebo_world_file_name = 'test_world.sdf'
 
-    
-    # rviz2_config_file_name = 'rviz2_description_config.rviz'
+    rviz2_config_file_name = 'rviz2_simulation_config.rviz'
 
 
     # Пути к пакетам
@@ -42,15 +40,8 @@ def generate_launch_description():
     description_launch_file_path = os.path.join(description_pkg_path, 'launch', 'description.launch.py')
     gazebo_launch_file_path = os.path.join(gazebo_pkg_path, 'launch', 'gz_sim.launch.py')
     gz_bridge_config_file_path = os.path.join(simulation_pkg_path, 'configs', gazebo_config_file_name)
+    rviz2_config_file_path = os.path.join(simulation_pkg_path, 'configs', rviz2_config_file_name)
     gazebo_world_file_path = os.path.join(simulation_pkg_path, 'worlds', gazebo_world_file_name)
-
-
-    # Пути к конфигурационным файлам
-    # rviz2_config_file_path = os.path.join(
-    #     description_pkg_path,
-    #     'config',
-    #     rviz2_config_file_name
-    # )
 
 
     # Обращение к файлам запуска
@@ -87,6 +78,26 @@ def generate_launch_description():
             }],  
     )
 
+    static_tf_lidar = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'base_footprint',
+            '--child-frame-id', 'SmartBox/base_footprint/lidar_link'
+        ],
+        parameters=[{'use_sim_time': True}]
+    )
+
+    rviz2_launch_node = Node(
+        package = 'rviz2',
+        executable = 'rviz2',
+        name = 'rviz2',
+        output = 'screen',
+        arguments = ['-d', rviz2_config_file_path],
+    )
+
 
     # Запуск
     ld = LaunchDescription()
@@ -97,5 +108,7 @@ def generate_launch_description():
     ld.add_action(gazebo_launch_include)
     ld.add_action(spawn_robot_in_gazebo_node)
     ld.add_action(gz_bridge_node)
+    ld.add_action(static_tf_lidar)
+    ld.add_action(rviz2_launch_node)
 
     return ld
