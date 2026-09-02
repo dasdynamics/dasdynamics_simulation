@@ -25,7 +25,8 @@ def generate_launch_description():
 
     gazebo_pkg_name = 'ros_gz_sim'
     gazebo_config_file_name = 'gz_bridge_config.yaml'
-    gazebo_world_file_name = 'dasdynamic_test_world.sdf'
+    gazebo_world_file_name = 'dasdynamic_test_world1.sdf'
+    # gazebo_world_file_name = 'test_world.sdf'
 
     
     # rviz2_config_file_name = 'rviz2_description_config.rviz'
