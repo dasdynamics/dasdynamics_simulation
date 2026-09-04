@@ -1,18 +1,20 @@
 import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.conditions import IfCondition
 from ament_index_python.packages import get_package_share_directory
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
 
     # Аргументы запуска
-    # rviz2_launch_argument_declare = DeclareLaunchArgument(
-    #     'rviz2_run',
-    #     default_value = 'true',
-    #     description = 'Start Rviz2 when starting descriptions.'
-    # )
+    rviz2_launch_argument_declare = DeclareLaunchArgument(
+        'rviz2_run',
+        default_value = 'true',
+        description = 'Start Rviz2 when starting descriptions.'
+    )
 
 
     # Параметры окружения
@@ -25,7 +27,7 @@ def generate_launch_description():
 
     gazebo_pkg_name = 'ros_gz_sim'
     gazebo_config_file_name = 'gz_bridge_config.yaml'
-    gazebo_world_file_name = 'dasdynamic_test_world1.sdf'
+    gazebo_world_file_name = 'dasdynamic_test_world.sdf'
 
     rviz2_config_file_name = 'rviz2_simulation_config.rviz'
 
@@ -96,15 +98,17 @@ def generate_launch_description():
         name = 'rviz2',
         output = 'screen',
         arguments = ['-d', rviz2_config_file_path],
+        condition = IfCondition(LaunchConfiguration('rviz2_run')),
     )
 
 
     # Запуск
     ld = LaunchDescription()
 
-    # ld.add_action(rviz2_launch_argument_declare)
+    ld.add_action(rviz2_launch_argument_declare)
 
     ld.add_action(description_launch_include)
+
     ld.add_action(gazebo_launch_include)
     ld.add_action(spawn_robot_in_gazebo_node)
     ld.add_action(gz_bridge_node)
