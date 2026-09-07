@@ -11,7 +11,7 @@ def generate_launch_description():
 
     # Аргументы запуска
     rviz2_launch_argument_declare = DeclareLaunchArgument(
-        'rviz2_run',
+        'rviz2_simulation_run',
         default_value = 'true',
         description = 'Start Rviz2 when starting descriptions.'
     )
@@ -21,14 +21,11 @@ def generate_launch_description():
     robot_name = 'SmartBox'
 
     simulation_pkg_name = 'dasdynamics_simulation'
-
     description_pkg_name = 'smartbox_description'
-    description_file_name = 'main.urdf.xacro'
 
     gazebo_pkg_name = 'ros_gz_sim'
     gazebo_config_file_name = 'gz_bridge_config.yaml'
-    gazebo_world_file_name = 'dasdynamic_test_world.sdf'
-
+    gazebo_world_file_name = 'dasdynamic_simulation_world.sdf'
     rviz2_config_file_name = 'rviz2_simulation_config.rviz'
 
 
@@ -41,9 +38,9 @@ def generate_launch_description():
     # Пути к файлам
     description_launch_file_path = os.path.join(description_pkg_path, 'launch', 'description.launch.py')
     gazebo_launch_file_path = os.path.join(gazebo_pkg_path, 'launch', 'gz_sim.launch.py')
-    gz_bridge_config_file_path = os.path.join(simulation_pkg_path, 'configs', gazebo_config_file_name)
-    rviz2_config_file_path = os.path.join(simulation_pkg_path, 'configs', rviz2_config_file_name)
-    gazebo_world_file_path = os.path.join(simulation_pkg_path, 'worlds', gazebo_world_file_name)
+    gz_bridge_config_file_path = os.path.join(simulation_pkg_path, 'config', gazebo_config_file_name)
+    rviz2_config_file_path = os.path.join(simulation_pkg_path, 'config', rviz2_config_file_name)
+    gazebo_world_file_path = os.path.join(simulation_pkg_path, 'world', gazebo_world_file_name)
 
 
     # Обращение к файлам запуска
@@ -98,7 +95,7 @@ def generate_launch_description():
         name = 'rviz2',
         output = 'screen',
         arguments = ['-d', rviz2_config_file_path],
-        condition = IfCondition(LaunchConfiguration('rviz2_run')),
+        condition = IfCondition(LaunchConfiguration('rviz2_simulation_run')),
     )
 
 
