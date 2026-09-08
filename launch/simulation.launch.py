@@ -9,15 +9,7 @@ from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
 
-    # Аргументы запуска
-    rviz2_launch_argument_declare = DeclareLaunchArgument(
-        'rviz2_simulation_run',
-        default_value = 'true',
-        description = 'Start Rviz2 when starting descriptions.'
-    )
-
-
-    # Параметры окружения
+    # --- Параметры для изменения ---
     robot_name = 'SmartBox'
 
     simulation_pkg_name = 'dasdynamics_simulation'
@@ -27,15 +19,13 @@ def generate_launch_description():
     gazebo_config_file_name = 'gz_bridge_config.yaml'
     gazebo_world_file_name = 'dasdynamic_simulation_world.sdf'
     rviz2_config_file_name = 'rviz2_simulation_config.rviz'
+    # --- --- --- --- --- --- --- ---
 
 
-    # Пути к пакетам
     description_pkg_path = get_package_share_directory(description_pkg_name)
     gazebo_pkg_path = get_package_share_directory(gazebo_pkg_name)
     simulation_pkg_path = get_package_share_directory(simulation_pkg_name)
 
-
-    # Пути к файлам
     description_launch_file_path = os.path.join(description_pkg_path, 'launch', 'description.launch.py')
     gazebo_launch_file_path = os.path.join(gazebo_pkg_path, 'launch', 'gz_sim.launch.py')
     gz_bridge_config_file_path = os.path.join(simulation_pkg_path, 'config', gazebo_config_file_name)
@@ -43,7 +33,12 @@ def generate_launch_description():
     gazebo_world_file_path = os.path.join(simulation_pkg_path, 'world', gazebo_world_file_name)
 
 
-    # Обращение к файлам запуска
+    rviz2_launch_argument_declare = DeclareLaunchArgument(
+        'rviz2_simulation_run',
+        default_value = 'true',
+        description = 'Start Rviz2 when starting descriptions.'
+    )
+
     description_launch_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_file_path),
         launch_arguments = {'rviz2_run': 'false'}.items()
@@ -57,7 +52,6 @@ def generate_launch_description():
     )
 
 
-    # Ноды
     spawn_robot_in_gazebo_node = Node(
         package = 'ros_gz_sim',
         executable = 'create', 
@@ -99,7 +93,6 @@ def generate_launch_description():
     )
 
 
-    # Запуск
     ld = LaunchDescription()
 
     ld.add_action(rviz2_launch_argument_declare)
